@@ -46,7 +46,15 @@ by Kai Zhang (03/03/2019)
 '''
 
 
-def main():
+def main(sf=4, testsets='testsets', testset_current='real_imgs', target= 'pred_imgs', im='chip.jpg'):
+    """
+    :param sf: 几倍放大
+    :param testsets: 基址目录
+    :param testset_current: 源图片目录
+    :param target: 目标图片目录
+    :param im: 图片名
+    :return:
+    """
 
     # --------------------------------
     # let's start!
@@ -56,13 +64,13 @@ def main():
 
     # basic setting
     # ================================================
-    sf = 4
+    # sf = 4
     show_img = True
     noise_level_img = 8./255.
-    testsets = 'testsets'
-    testset_current = 'real_imgs'
+    # testsets = 'testsets'
+    # testset_current = 'real_imgs'
 
-    im = 'chip.png'  # chip.png colour.png
+    # im = '1.jpg'  # chip.png colour.png
 
     if 'chip' in im:
         noise_level_img = 8./255.
@@ -102,10 +110,10 @@ def main():
     # (2) L_folder, E_folder
     # --------------------------------
     # --1--> L_folder, folder of Low-quality images
-    L_folder = os.path.join(testsets, testset_current, 'LR')  # L: Low quality
+    L_folder = os.path.join(testsets, testset_current)  # L: Low quality
 
     # --2--> E_folder, folder of Estimated images
-    E_folder = os.path.join(testsets, testset_current, 'x{:01d}_'.format(sf)+save_suffix)
+    E_folder = os.path.join(testsets, target)
     util.mkdir(E_folder)
 
     logger.info(L_folder)
@@ -117,9 +125,10 @@ def main():
     # (3) load low-resolution image
     # --------------------------------
     img_name, ext = os.path.splitext(im)
+    print(os.path.join(L_folder, im))
     img = util.imread_uint(os.path.join(L_folder, im), n_channels=n_channels)
     h, w = img.shape[:2]
-    util.imshow(img, title='Low-resolution image') if show_img else None
+    # util.imshow(img, title='Low-resolution image') if show_img else None
     img = util.uint2single(img)
 
     # --------------------------------
@@ -189,10 +198,10 @@ def main():
     # --------------------------------
     img_E = util.single2uint(z[:h*sf, :w*sf])  # np.uint8((z[:h*sf, :w*sf] * 255.0).round())
 
-    logger.info('saving: sf = {}, {}.'.format(sf, img_name+'_x{}'.format(sf)+ext))
-    util.imsave(img_E, os.path.join(E_folder, img_name+'_x{}'.format(sf)+ext))
+    logger.info('saving: sf = {}, {}.'.format(sf, img_name+ext))
+    util.imsave(img_E, os.path.join(E_folder, img_name+ext))
 
-    util.imshow(img_E, title='Recovered image') if show_img else None
+    # util.imshow(img_E, title='Recovered image') if show_img else None
 
 
 if __name__ == '__main__':

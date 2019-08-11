@@ -127,10 +127,12 @@ def imread_uint(path, n_channels=3):
         img = np.expand_dims(img, axis=2)  # HxWx1
     elif n_channels == 3:
         img = cv2.imread(path, cv2.IMREAD_UNCHANGED)  # BGR or G
-        if img.ndim == 2:
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)  # GGG
-        else:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # RGB
+        if img is None:
+            raise Exception('读入图片为空')
+        # if img.ndim == 2:
+        #     img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)  # GGG
+        # else:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # RGB
     return img
 
 
